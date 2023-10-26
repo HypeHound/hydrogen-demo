@@ -176,6 +176,11 @@ const CART_QUERY_FRAGMENT = `#graphql
         ...Money
       }
     }
+    sellingPlanAllocation {
+      sellingPlan {
+        name
+      }
+    }
     merchandise {
       ... on ProductVariant {
         id
@@ -230,6 +235,10 @@ const CART_QUERY_FRAGMENT = `#graphql
       }
     }
     cost {
+      checkoutChargeAmount {
+        amount
+        currencyCode
+      }
       subtotalAmount {
         ...Money
       }
