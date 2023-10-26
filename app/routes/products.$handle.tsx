@@ -201,7 +201,13 @@ function ProductPrice({
   selectedVariant,
 }: {
   selectedVariant: ProductFragment['selectedVariant'];
-}) {
+  }) {
+  let depositAmount = "";
+  if (selectedVariant?.sellingPlanAllocations.edges[0].node.sellingPlan.checkoutCharge.value.__typename === 'SellingPlanCheckoutChargePercentageValue') {
+    depositAmount = selectedVariant?.sellingPlanAllocations.edges[0].node.sellingPlan.checkoutCharge.value.percentage + '%';
+  } else {
+    depositAmount = selectedVariant?.sellingPlanAllocations.edges[0].node.sellingPlan.checkoutCharge.value.amount || "";
+  }
   return (
     <div className="product-price">
       {selectedVariant?.compareAtPrice ? (
@@ -218,6 +224,9 @@ function ProductPrice({
       ) : (
         selectedVariant?.price && <Money data={selectedVariant?.price} />
       )}
+      <div>
+        Deposit due at checkout: {depositAmount}
+      </div>
     </div>
   );
 }
@@ -370,6 +379,18 @@ const PRODUCT_VARIANT_FRAGMENT = `#graphql
             id
             name
             description
+            checkoutCharge {
+              value {
+                __typename
+                ... on MoneyV2 {
+                  amount
+                  currencyCode
+                }
+                ... on SellingPlanCheckoutChargePercentageValue {
+                  percentage
+                }
+              }
+            }
           }
         }
       }
