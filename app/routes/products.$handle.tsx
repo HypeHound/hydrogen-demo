@@ -358,6 +358,18 @@ const PRODUCT_VARIANT_FRAGMENT = `#graphql
       amount
       currencyCode
     }
+    sellingPlanAllocations(first: 1) {
+      edges {
+        cursor
+        node {
+          sellingPlan {
+            id
+            name
+            description
+          }
+        }
+      }
+    }
   }
 ` as const;
 
