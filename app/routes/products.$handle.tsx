@@ -13,6 +13,8 @@ import type {
   ProductVariantFragment,
 } from 'storefrontapi.generated';
 
+import { PartialDeep } from 'type-fest';
+
 import {
   Image,
   Money,
@@ -23,6 +25,7 @@ import {
 } from '@shopify/hydrogen';
 import type {
   CartLineInput,
+  ProductVariantConnection,
   SelectedOption,
 } from '@shopify/hydrogen/storefront-api-types';
 import {getVariantUrl} from '~/utils';
@@ -198,7 +201,13 @@ function ProductPrice({
   selectedVariant,
 }: {
   selectedVariant: ProductFragment['selectedVariant'];
-}) {
+  }) {
+  let depositAmount = "";
+  if (selectedVariant?.sellingPlanAllocations.edges[0].node.sellingPlan.checkoutCharge.value.__typename === 'SellingPlanCheckoutChargePercentageValue') {
+    depositAmount = selectedVariant?.sellingPlanAllocations.edges[0].node.sellingPlan.checkoutCharge.value.percentage + '%';
+  } else {
+    depositAmount = selectedVariant?.sellingPlanAllocations.edges[0].node.sellingPlan.checkoutCharge.value.amount || "";
+  }
   return (
     <div className="product-price">
       {selectedVariant?.compareAtPrice ? (
@@ -215,6 +224,9 @@ function ProductPrice({
       ) : (
         selectedVariant?.price && <Money data={selectedVariant?.price} />
       )}
+      <div>
+        Deposit due at checkout: {depositAmount}
+      </div>
     </div>
   );
 }
@@ -233,7 +245,7 @@ function ProductForm({
       <VariantSelector
         handle={product.handle}
         options={product.options}
-        variants={variants}
+        variants={variants as PartialDeep<ProductVariantConnection>}
       >
         {({option}) => <ProductOptions key={option.name} option={option} />}
       </VariantSelector>
@@ -249,6 +261,7 @@ function ProductForm({
                 {
                   merchandiseId: selectedVariant.id,
                   quantity: 1,
+                  sellingPlanId: selectedVariant.sellingPlanAllocations.edges[0].node.sellingPlan.id,
                 },
               ]
             : []
@@ -357,6 +370,30 @@ const PRODUCT_VARIANT_FRAGMENT = `#graphql
     unitPrice {
       amount
       currencyCode
+    }
+    sellingPlanAllocations(first: 1) {
+      edges {
+        cursor
+        node {
+          sellingPlan {
+            id
+            name
+            description
+            checkoutCharge {
+              value {
+                __typename
+                ... on MoneyV2 {
+                  amount
+                  currencyCode
+                }
+                ... on SellingPlanCheckoutChargePercentageValue {
+                  percentage
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 ` as const;

@@ -111,6 +111,7 @@ function CartLineItem({
             </li>
           ))}
         </ul>
+        <span><small>{line.sellingPlanAllocation?.sellingPlan.name}</small></span>
         <CartLineQuantity line={line} />
       </div>
     </li>
@@ -146,7 +147,17 @@ export function CartSummary({
     <div aria-labelledby="cart-summary" className={className}>
       <h4>Totals</h4>
       <dl className="cart-subtotal">
-        <dt>Subtotal</dt>
+        <dt>Total Due Today:</dt>
+        <dd>
+          {cost?.checkoutChargeAmount?.amount ? (
+            <Money data={cost?.checkoutChargeAmount} />
+          ) : (
+            '-'
+          )}
+        </dd>
+      </dl>
+      <dl className="cart-subtotal">
+        <dt>Subtotal: </dt>
         <dd>
           {cost?.subtotalAmount?.amount ? (
             <Money data={cost?.subtotalAmount} />
