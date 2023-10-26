@@ -378,7 +378,7 @@ const PRODUCT_FRAGMENT = `#graphql
     }
     variants(first: 1) {
       nodes {
-        ...ProductVariant
+        ...ProductVariant 
       }
     }
     seo {
@@ -403,7 +403,7 @@ const PRODUCT_QUERY = `#graphql
   ${PRODUCT_FRAGMENT}
 ` as const;
 
-const PRODUCT_VARIANTS_FRAGMENT = `#graphql
+const VARIANTS_QUERY = `#graphql
   fragment ProductVariants on Product {
     variants(first: 250) {
       nodes {
@@ -412,10 +412,6 @@ const PRODUCT_VARIANTS_FRAGMENT = `#graphql
     }
   }
   ${PRODUCT_VARIANT_FRAGMENT}
-` as const;
-
-const VARIANTS_QUERY = `#graphql
-  ${PRODUCT_VARIANTS_FRAGMENT}
   query ProductVariants(
     $country: CountryCode
     $language: LanguageCode
