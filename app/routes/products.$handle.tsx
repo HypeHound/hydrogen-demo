@@ -13,6 +13,8 @@ import type {
   ProductVariantFragment,
 } from 'storefrontapi.generated';
 
+import { PartialDeep } from 'type-fest';
+
 import {
   Image,
   Money,
@@ -23,6 +25,7 @@ import {
 } from '@shopify/hydrogen';
 import type {
   CartLineInput,
+  ProductVariantConnection,
   SelectedOption,
 } from '@shopify/hydrogen/storefront-api-types';
 import {getVariantUrl} from '~/utils';
@@ -233,7 +236,7 @@ function ProductForm({
       <VariantSelector
         handle={product.handle}
         options={product.options}
-        variants={variants}
+        variants={variants as PartialDeep<ProductVariantConnection>}
       >
         {({option}) => <ProductOptions key={option.name} option={option} />}
       </VariantSelector>
@@ -249,6 +252,7 @@ function ProductForm({
                 {
                   merchandiseId: selectedVariant.id,
                   quantity: 1,
+                  sellingPlanId: selectedVariant.sellingPlanAllocations.edges[0].node.sellingPlan.id,
                 },
               ]
             : []
