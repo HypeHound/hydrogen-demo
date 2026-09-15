@@ -1,0 +1,4 @@
+# Every pull request must be approved by one of these code owners
+# before it can be merged. Authors cannot approve their own PR,
+# so this also prevents self-merges.
+* @deniszgonjanin @berkbozok
