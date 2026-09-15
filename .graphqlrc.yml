@@ -1,4 +1,0 @@
-schema: node_modules/@shopify/hydrogen-react/storefront.schema.json
-documents:
-  - 'app/**/*.{graphql,js,ts,jsx,tsx}'
-  - '**/*.tsx'
